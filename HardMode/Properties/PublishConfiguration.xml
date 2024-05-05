@@ -1,0 +1,41 @@
+﻿<Publish>
+	<!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
+	<ModId Value="" />
+	<!--Name of the mod to display to players-->
+	<DisplayName Value="Hard Mode" />
+	<!--Short description of the mod-->
+	<ShortDescription Value="Increases the difficulty of the economy and introduces new gameplay mechanics to make things harder" />
+	<!--Long description of the mod-->
+	  <LongDescription>
+# Hard Mode
+Increase the difficulty of managing your money in Cities: Skylines II, and add imminent domain functionality, alongside demolition costs.
+
+## Features
+* 4 difficulty settings in the mod's options.
+* Subsidies' formula is completely reworked, you get money at the start and lose subsidies the bigger your city is. You get less money, for a lower period of time the higher the difficulty setting is.
+* Milestone rewards use static money values based don the difficulty setting, instead of scaling up the higher you go.
+* Income factors and expenses are re-balanced and are affected by the difficulty setting. This includes changes to taxation, exported electricty, water, goods, garbage fees, etc.
+* Bulldozing a building causes it to collapse and you have to wait for it to be cleared before using the space. (can be toggled in the options)
+* Bulldozing a building costs money based on how many people are evicted, the land value, and the size of the building. (can be toggled in the options)
+* Bulldoze costs are added to your monthly budget and scale with the difficulty setting. (can be toggled in the options)
+* De-zoning an area will require the buildings to be demolished (at no cost) first before being removed. This process gets slower with higher difficulty setting. (can be toggled in the options)
+
+## Planned Features
+There are no immediate plans for new features. This is because CO might overhaul economy features soon.
+Feature requests are still welcome and hopefully might come in the future.
+	  </LongDescription>
+	<Thumbnail Value="Properties/Thumbnail.png" />
+	<Screenshot Value="Properties/Screenshot_01.png" />
+	<Screenshot Value="Properties/Screenshot_02.png" />
+	<Screenshot Value="Properties/Screenshot_03.png" />
+	<Screenshot Value="Properties/Screenshot_04.png" />
+	<Screenshot Value="Properties/Screenshot_05.png" />
+	<Tag Value="Code Mod" />
+	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/hard-mode.1674622/" />
+	<ModVersion Value="1.0.0" />
+	<GameVersion Value="1.1.2*" />
+	<ChangeLog>
+	</ChangeLog>
+	<ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
+	<ExternalLink Type="github" Url="https://github.com/JadHajjar/FindIt-CSII" />
+</Publish>
