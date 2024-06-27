@@ -71,12 +71,12 @@ namespace HardMode.Systems
 			public void Execute()
 			{
 				var num = 0;
-				for (var i = 0; i < 9; i++)
+				for (var i = 0; i < (int)ExpenseSource.Count; i++)
 				{
 					num -= EconomyUtility.GetExpense((ExpenseSource)i, m_Expenses);
 				}
 
-				for (var j = 0; j < 14; j++)
+				for (var j = 0; j < (int)IncomeSource.Count; j++)
 				{
 					num += EconomyUtility.GetIncome((IncomeSource)j, m_Income);
 				}

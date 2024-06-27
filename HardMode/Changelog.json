@@ -1,0 +1,15 @@
+[
+  {
+    "Stable": true,
+    "Version": "1.0.1",
+    "Date": "2024-06-24",
+    "ChangeGroups": [
+      {
+        "Name": "Changes",
+        "Changes": [
+          "Updated for Economy 2.0, updated all economy modifiers to accommodate for the changes in the new patch."
+        ]
+      }
+    ]
+  }
+]

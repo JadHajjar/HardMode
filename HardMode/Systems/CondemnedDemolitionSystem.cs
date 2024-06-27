@@ -19,6 +19,7 @@ namespace HardMode.Systems
 	{
 		private BulldozeCostSystem m_BulldozeCostSystem;
 		private BulldozeDemolitionSystem m_BulldozeDemolitionSystem;
+		private CitySystem m_CitySystem;
 		private EndFrameBarrier m_EndFrameBarrier;
 		private EntityQuery m_CondemnedQuery;
 
@@ -35,6 +36,7 @@ namespace HardMode.Systems
 
 			m_BulldozeCostSystem = World.GetOrCreateSystemManaged<BulldozeCostSystem>();
 			m_BulldozeDemolitionSystem = World.GetOrCreateSystemManaged<BulldozeDemolitionSystem>();
+			m_CitySystem = World.GetOrCreateSystemManaged<CitySystem>();
 			m_EndFrameBarrier = World.GetOrCreateSystemManaged<EndFrameBarrier>();
 			m_CondemnedQuery = SystemAPI.QueryBuilder().WithAll<Condemned, Building, UpdateFrame>().WithNone<Destroyed, Deleted, Temp>().Build();
 
@@ -45,14 +47,14 @@ namespace HardMode.Systems
 		{
 			base.OnGameLoaded(serializationContext);
 
-			World.DefaultGameObjectInjectionWorld.GetOrCreateSystemManaged<CondemnedBuildingSystem>().Enabled = false;
+			World.GetOrCreateSystemManaged<CondemnedBuildingSystem>().Enabled = false;
 		}
 
 		protected override void OnUpdate()
 		{
 			var commandBuffer = m_EndFrameBarrier.CreateCommandBuffer();
 			var entities = m_CondemnedQuery.ToEntityArray(Allocator.Temp);
-			var m_City = World.GetOrCreateSystemManaged<CitySystem>().City;
+			var m_City = m_CitySystem.City;
 
 			for (var i = 0; i < entities.Length; i++)
 			{

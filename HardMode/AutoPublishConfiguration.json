@@ -1,0 +1,7 @@
+{
+  "ModName": "Hard Mode",
+  "ThumbnailUrl": "https://imgur.com/5vP3MpR.png",
+  "PublishConfigurationFile": "Properties\\PublishConfiguration.xml",
+  "ChangelogFile": "Changelog.json",
+  "Color": "132, 32, 27"
+}

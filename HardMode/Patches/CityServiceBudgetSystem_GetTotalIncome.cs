@@ -25,7 +25,7 @@ namespace HardMode.Patches
 			var m_City = m_CitySystem.City;
 			var total = 0;
 
-			for (var j = 0; j < 14; j++)
+			for (var j = 0; j < (int)IncomeSource.Count; j++)
 			{
 				total += EconomyUtility.GetIncome((IncomeSource)j, income);
 			}

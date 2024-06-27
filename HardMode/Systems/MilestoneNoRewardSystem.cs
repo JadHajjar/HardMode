@@ -58,9 +58,9 @@ namespace HardMode.Systems
 
 				component.m_Reward = (Mod.Settings?.EconomyDifficulty) switch
 				{
-					Domain.EconomyDifficulty.Easy => component.m_Index % 4 == 0 ? 1_000_000 : 500_000,
-					Domain.EconomyDifficulty.Medium => component.m_Index % 4 == 0 ? 500_000 : 250_000,
-					Domain.EconomyDifficulty.Hard => component.m_Index % 4 == 0 ? 250_000 : 125_000,
+					Domain.EconomyDifficulty.Easy => component.m_Index % 4 == 0 ? 250_000 : 125_000,
+					Domain.EconomyDifficulty.Medium => component.m_Index % 4 == 0 ? 200_000 : 100_000,
+					Domain.EconomyDifficulty.Hard => component.m_Index % 4 == 0 ? 100_000 : 50_000,
 					_ => 0,
 				};
 

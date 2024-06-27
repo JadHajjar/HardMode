@@ -26,7 +26,7 @@ namespace HardMode.Patches
 			var m_City = m_CitySystem.City;
 			var total = 0;
 
-			for (var i = 0; i < 9; i++)
+			for (var i = 0; i < (int)ExpenseSource.Count; i++)
 			{
 				total -= EconomyUtility.GetExpense((ExpenseSource)i, expenses);
 			}

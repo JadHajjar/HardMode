@@ -21,12 +21,12 @@ namespace HardMode.Patches
 			var m_CityServiceBudgetSystem = __instance.World.GetOrCreateSystemManaged<CityServiceBudgetSystem>();
 			var m_CitySystem = __instance.World.GetOrCreateSystemManaged<CitySystem>();
 			var num = 0;
-			for (var i = 0; i < 9; i++)
+			for (var i = 0; i < (int)ExpenseSource.Count; i++)
 			{
 				num -= EconomyUtility.GetExpense((ExpenseSource)i, m_CityServiceBudgetSystem.GetExpense((ExpenseSource)i));
 			}
 
-			for (var j = 0; j < 14; j++)
+			for (var j = 0; j < (int)IncomeSource.Count; j++)
 			{
 				num += EconomyUtility.GetIncome((IncomeSource)j, m_CityServiceBudgetSystem.GetIncome((IncomeSource)j));
 			}

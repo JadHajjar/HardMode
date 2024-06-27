@@ -133,8 +133,8 @@ namespace HardMode.Systems
 
 		private void BindIncomeValues(IJsonWriter writer)
 		{
-			writer.ArrayBegin(14u);
-			for (var i = 0; i < 14; i++)
+			writer.ArrayBegin((uint)IncomeSource.Count);
+			for (var i = 0; i < (int)IncomeSource.Count; i++)
 			{
 				writer.Write(EconomyUtility.GetIncome((IncomeSource)i, m_CityServiceBudgetSystem.GetIncome((IncomeSource)i)));
 			}
@@ -198,7 +198,7 @@ namespace HardMode.Systems
 					writer.PropertyName("id");
 					writer.Write("BuildingDemolitions");
 					writer.PropertyName("index");
-					writer.Write(9);
+					writer.Write((int)IncomeSource.Count);
 					writer.TypeEnd();
 				}
 
@@ -221,8 +221,8 @@ namespace HardMode.Systems
 
 		private void BindExpenseValues(IJsonWriter writer)
 		{
-			writer.ArrayBegin(10u);
-			for (var i = 0; i < 9; i++)
+			writer.ArrayBegin(1u + (uint)ExpenseSource.Count);
+			for (var i = 0; i < (int)ExpenseSource.Count; i++)
 			{
 				writer.Write(-EconomyUtility.GetExpense((ExpenseSource)i, m_CityServiceBudgetSystem.GetExpense((ExpenseSource)i)));
 			}

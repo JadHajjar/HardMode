@@ -41,19 +41,21 @@ namespace HardMode.Utility
 			{
 				ExpenseSource.SubsidyResidential or ExpenseSource.SubsidyCommercial or ExpenseSource.SubsidyIndustrial or ExpenseSource.SubsidyOffice => value * 5 / 3,
 				ExpenseSource.LoanInterest => value * 3 / 2,
-				ExpenseSource.ImportElectricity => value * 3,
+				ExpenseSource.ImportElectricity => value * 5 / 4,
 				ExpenseSource.ImportWater or ExpenseSource.ExportSewage => value * 6,
-				ExpenseSource.Count => value * 7 / 5,
-				_ => value
+				ExpenseSource.Count => value * 8 / 6,
+				ExpenseSource.ImportPoliceService or ExpenseSource.ImportAmbulanceService or ExpenseSource.ImportHearseService or ExpenseSource.ImportFireEngineService or ExpenseSource.ImportGarbageService => value * 2 / 5,
+				ExpenseSource.MapTileUpkeep => value * 3 / 5,
+				_ => value * 11 / 10
 			};
 
-			return Mathf.RoundToInt((Mod.Settings?.EconomyDifficulty) switch
+			return Mathf.RoundToInt(value * Mod.Settings?.EconomyDifficulty switch
 			{
-				Domain.EconomyDifficulty.Easy => value,
-				Domain.EconomyDifficulty.Medium => value * 1.15f,
-				Domain.EconomyDifficulty.Hard => value * 1.3f,
-				Domain.EconomyDifficulty.GoodLuck => value * 1.45f,
-				_ => value,
+				Domain.EconomyDifficulty.Easy => 0.85f,
+				Domain.EconomyDifficulty.Medium => 0.90f,
+				Domain.EconomyDifficulty.Hard => 1.00f,
+				Domain.EconomyDifficulty.GoodLuck => 1.10f,
+				_ => 1f,
 			});
 		}
 
@@ -66,23 +68,25 @@ namespace HardMode.Utility
 		{
 			value = source switch
 			{
-				IncomeSource.TaxResidential or IncomeSource.TaxCommercial or IncomeSource.TaxIndustrial or IncomeSource.TaxOffice => value * 4 / 5,
-				IncomeSource.FeeElectricity => value * 9 / 5,
+				IncomeSource.TaxResidential or IncomeSource.TaxCommercial or IncomeSource.TaxIndustrial => value * 8 / 10,
+				IncomeSource.TaxOffice => value * 16 / 13,
+				IncomeSource.FeeElectricity => value * 4 / 5,
 				IncomeSource.ExportElectricity => value * 2 / 5,
 				IncomeSource.ExportWater or IncomeSource.FeeWater => value * 3,
-				IncomeSource.FeeGarbage => value / 12,
-				IncomeSource.FeeHealthcare => value * 8,
+				IncomeSource.FeeGarbage => value * 4 / 3,
+				IncomeSource.FeeEducation => value * 5 / 3,
+				IncomeSource.FeeHealthcare => value * 5,
 				IncomeSource.Count => value / 3,
 				_ => value
 			};
 
-			return Mathf.RoundToInt((Mod.Settings?.EconomyDifficulty) switch
+			return Mathf.RoundToInt(value / Mod.Settings?.EconomyDifficulty switch
 			{
-				Domain.EconomyDifficulty.Easy => value / 0.95f,
-				Domain.EconomyDifficulty.Medium => value / 1.1f,
-				Domain.EconomyDifficulty.Hard => value / 1.25f,
-				Domain.EconomyDifficulty.GoodLuck => value / 1.4f,
-				_ => value,
+				Domain.EconomyDifficulty.Easy => 0.85f,
+				Domain.EconomyDifficulty.Medium => 0.9f,
+				Domain.EconomyDifficulty.Hard => 0.95f,
+				Domain.EconomyDifficulty.GoodLuck => 1f,
+				_ => 1f,
 			});
 		}
 	}

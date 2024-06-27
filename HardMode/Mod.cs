@@ -20,7 +20,7 @@ namespace HardMode
 	{
 		private Harmony _harmony;
 
-		public static ILog Log { get; } = LogManager.GetLogger($"{nameof(HardMode)}.{nameof(Mod)}").SetShowsErrorsInUI(showsErrorsInUI: false);
+		public static ILog Log { get; } = LogManager.GetLogger(nameof(HardMode)).SetShowsErrorsInUI(showsErrorsInUI: false);
 		public static HardModeSettings Settings { get; private set; }
 
 		public void OnLoad(UpdateSystem updateSystem)
