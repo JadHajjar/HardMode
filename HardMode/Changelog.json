@@ -1,6 +1,19 @@
 [
   {
     "Stable": true,
+    "Version": "1.1",
+    "Date": "2024-12-04",
+    "ChangeGroups": [
+      {
+        "Name": "Hotfix",
+        "Changes": [
+          "Compatibility with patch 1.2.0f1."
+        ]
+      }
+    ]
+  },
+  {
+    "Stable": true,
     "Version": "1.0.1",
     "Date": "2024-06-24",
     "ChangeGroups": [

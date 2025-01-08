@@ -30,14 +30,14 @@ Feature requests are still welcome and hopefully might come in the future.
   <Screenshot Value="Properties/Screenshot_05.png" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/hard-mode.1674622/" />
-  <ModVersion Value="1.0.1" />
-  <GameVersion Value="1.1.5*" />
+  <ModVersion Value="1.1" />
+  <GameVersion Value="1.2.*" />
   <ChangeLog>
-# v1.0.1
-## Changes
-* Updated for Economy 2.0, updated all economy modifiers to accommodate for the changes in the new patch.
+# v1.1
+## Hotfix
+* Compatibility with patch 1.2.0f1.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/HardMode" />
-  <ExternalLink Type="buymeacoffee" Url="https://www.buymeacoffee.com/tdwsvillage" />
+  <ExternalLink Type="patreon" Url="https://www.patreon.com/tdwsvillage" />
 </Publish>
