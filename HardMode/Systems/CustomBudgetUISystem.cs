@@ -12,6 +12,7 @@ using HardMode.Domain;
 using HardMode.Utility;
 
 using System;
+using System.Collections.Generic;
 
 using Unity.Entities;
 
@@ -19,12 +20,16 @@ namespace HardMode.Systems
 {
 	public partial class CustomBudgetUISystem : UISystemBase
 	{
+		private Dictionary<string, Func<bool>> m_BudgetsActivations;
 		private PrefabSystem m_PrefabSystem;
 		private BudgetUISystem m_BudgetUISystem;
 		private CityServiceBudgetSystem m_CityServiceBudgetSystem;
 
 		private EntityQuery m_ConfigQuery;
-
+		private GameModeGovernmentSubsidiesSystem m_GovernmentSubsidiesSystem;
+		private CityConfigurationSystem m_CityConfigurationSystem;
+		private MapTilePurchaseSystem m_MapTilePurchaseSystem;
+		private CitySystem m_CitySystem;
 		private GetterValueBinding<int> m_TotalIncomeBinding;
 
 		private GetterValueBinding<int> m_TotalExpensesBinding;
@@ -45,12 +50,52 @@ namespace HardMode.Systems
 			m_BudgetUISystem = World.GetOrCreateSystemManaged<BudgetUISystem>();
 			m_CityServiceBudgetSystem = World.GetOrCreateSystemManaged<CityServiceBudgetSystem>();
 			m_ConfigQuery = GetEntityQuery(ComponentType.ReadOnly<UIEconomyConfigurationData>());
+			m_GovernmentSubsidiesSystem = World.GetOrCreateSystemManaged<GameModeGovernmentSubsidiesSystem>();
+			m_CityConfigurationSystem = World.GetOrCreateSystemManaged<CityConfigurationSystem>();
+			m_MapTilePurchaseSystem = World.GetOrCreateSystemManaged<MapTilePurchaseSystem>();
+			m_CitySystem = World.GetOrCreateSystemManaged<CitySystem>();
+			m_BudgetsActivations = new Dictionary<string, Func<bool>>
+			{
+				{
+					"Government",
+					() => m_GovernmentSubsidiesSystem.Enabled
+				},
+				{
+					"Loan Interest",
+					() => !m_CityConfigurationSystem.unlimitedMoney
+				},
+				{
+					"Tile Upkeep",
+					delegate
+					{
+						if (m_CityConfigurationSystem.unlockMapTiles)
+						{
+							return false;
+						}
+
+						var singleton = GetEntityQuery(ComponentType.ReadOnly<EconomyParameterData>()).GetSingleton<EconomyParameterData>();
+						var num = 0f;
+						for (var i = 0; i <= 100; i += 10)
+						{
+							num = singleton.m_MapTileUpkeepCostMultiplier.Evaluate(i);
+							if (num > 0f)
+							{
+								return true;
+							}
+						}
+
+						return num != 0f;
+					}
+				}
+			};
+
 			AddBinding(m_TotalIncomeBinding = new GetterValueBinding<int>("budget", "totalIncome", GetTotalIncome));
 			AddBinding(m_TotalExpensesBinding = new GetterValueBinding<int>("budget", "totalExpenses", GetTotalExpenses));
 			AddBinding(m_IncomeItemsBinding = new RawValueBinding("budget", "incomeItems", BindIncomeItems));
 			AddBinding(m_IncomeValuesBinding = new RawValueBinding("budget", "incomeValues", BindIncomeValues));
 			AddBinding(m_ExpenseItemsBinding = new RawValueBinding("budget", "expenseItems", BindExpenseItems));
 			AddBinding(m_ExpenseValuesBinding = new RawValueBinding("budget", "expenseValues", BindExpenseValues));
+
 		}
 
 		protected override void OnGameLoaded(Context serializationContext)
@@ -78,7 +123,6 @@ namespace HardMode.Systems
 		{
 			return m_CityServiceBudgetSystem.GetTotalExpenses();
 		}
-
 		private void BindIncomeItems(IJsonWriter writer)
 		{
 			var config = GetConfig();
@@ -93,16 +137,10 @@ namespace HardMode.Systems
 				writer.Write(budgetItem.m_Color);
 				writer.PropertyName("icon");
 				writer.Write(budgetItem.m_Icon);
+				writer.PropertyName("active");
+				writer.Write(!m_BudgetsActivations.ContainsKey(budgetItem.m_ID) || m_BudgetsActivations[budgetItem.m_ID]());
 				writer.PropertyName("sources");
-
-				var subItems = budgetItem.m_Sources.Length;
-
-				//if (budgetItem.m_ID == "Exports")
-				//{
-				//	subItems++;
-				//}
-
-				writer.ArrayBegin(subItems);
+				writer.ArrayBegin(budgetItem.m_Sources.Length);
 				var sources = budgetItem.m_Sources;
 				foreach (var incomeSource in sources)
 				{
@@ -114,16 +152,6 @@ namespace HardMode.Systems
 					writer.TypeEnd();
 				}
 
-				//if (budgetItem.m_ID == "Exports")
-				//{
-				//	writer.TypeBegin("Game.UI.InGame.BudgetSource");
-				//	writer.PropertyName("id");
-				//	writer.Write("ExportedGoods");
-				//	writer.PropertyName("index");
-				//	writer.Write(14);
-				//	writer.TypeEnd();
-				//}
-
 				writer.ArrayEnd();
 				writer.TypeEnd();
 			}
@@ -133,28 +161,12 @@ namespace HardMode.Systems
 
 		private void BindIncomeValues(IJsonWriter writer)
 		{
-			writer.ArrayBegin((uint)IncomeSource.Count);
-			for (var i = 0; i < (int)IncomeSource.Count; i++)
+			writer.ArrayBegin(14u);
+			for (var i = 0; i < 14; i++)
 			{
 				writer.Write(EconomyUtility.GetIncome((IncomeSource)i, m_CityServiceBudgetSystem.GetIncome((IncomeSource)i)));
 			}
 
-			//var m_City = World.GetOrCreateSystemManaged<CitySystem>().City;
-			//var money = 0;
-
-			//if (EntityManager.TryGetBuffer<BufferedMoneyResource>(m_City, true, out var moneyBuffer))
-			//{
-			//	for (var i = 0; i < moneyBuffer.Length; i++)
-			//	{
-			//		var bufferedMoney = moneyBuffer[i];
-			//		if (bufferedMoney.m_Value > 0)
-			//		{
-			//			money += EconomyUtility.GetIncome(IncomeSource.Count, bufferedMoney.m_Value);
-			//		}
-			//	}
-			//}
-
-			//writer.Write(money);
 			writer.ArrayEnd();
 		}
 
@@ -172,15 +184,10 @@ namespace HardMode.Systems
 				writer.Write(budgetItem.m_Color);
 				writer.PropertyName("icon");
 				writer.Write(budgetItem.m_Icon);
+				writer.PropertyName("active");
+				writer.Write(!m_BudgetsActivations.ContainsKey(budgetItem.m_ID) || m_BudgetsActivations[budgetItem.m_ID]());
 				writer.PropertyName("sources");
-				var subItems = budgetItem.m_Sources.Length;
-
-				if (budgetItem.m_ID is /*"Imports" or*/ "Upkeeps")
-				{
-					subItems++;
-				}
-
-				writer.ArrayBegin(subItems);
+				writer.ArrayBegin((budgetItem.m_ID == "Upkeeps" ? 1 : 0) + budgetItem.m_Sources.Length);
 				var sources = budgetItem.m_Sources;
 				foreach (var expenseSource in sources)
 				{
@@ -202,16 +209,6 @@ namespace HardMode.Systems
 					writer.TypeEnd();
 				}
 
-				//if (budgetItem.m_ID == "Imports")
-				//{
-				//	writer.TypeBegin("Game.UI.InGame.BudgetSource");
-				//	writer.PropertyName("id");
-				//	writer.Write("ImportedGoods");
-				//	writer.PropertyName("index");
-				//	writer.Write(10);
-				//	writer.TypeEnd();
-				//}
-
 				writer.ArrayEnd();
 				writer.TypeEnd();
 			}
@@ -221,14 +218,13 @@ namespace HardMode.Systems
 
 		private void BindExpenseValues(IJsonWriter writer)
 		{
-			writer.ArrayBegin(1u + (uint)ExpenseSource.Count);
-			for (var i = 0; i < (int)ExpenseSource.Count; i++)
+			writer.ArrayBegin(16u);
+			for (var i = 0; i < 15; i++)
 			{
 				writer.Write(-EconomyUtility.GetExpense((ExpenseSource)i, m_CityServiceBudgetSystem.GetExpense((ExpenseSource)i)));
 			}
 
-			var m_City = World.GetOrCreateSystemManaged<CitySystem>().City;
-
+			var m_City = m_CitySystem.City;
 			var demoCost = 0;
 			if (EntityManager.TryGetBuffer<PendingDemolitionCosts>(m_City, true, out var demoCostsBuffer))
 			{
@@ -240,21 +236,6 @@ namespace HardMode.Systems
 			}
 
 			writer.Write(demoCost);
-
-			//var money = 0;
-			//if (EntityManager.TryGetBuffer<BufferedMoneyResource>(m_City, true, out var moneyBuffer))
-			//{
-			//	for (var i = 0; i < moneyBuffer.Length; i++)
-			//	{
-			//		var bufferedMoney = moneyBuffer[i];
-			//		if (bufferedMoney.m_Value < 0)
-			//		{
-			//			money += EconomyUtility.GetExpense(ExpenseSource.Count, bufferedMoney.m_Value);
-			//		}
-			//	}
-			//}
-
-			//writer.Write(money);
 
 			writer.ArrayEnd();
 		}

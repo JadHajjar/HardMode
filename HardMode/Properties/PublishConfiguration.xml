@@ -30,12 +30,12 @@ Feature requests are still welcome and hopefully might come in the future.
   <Screenshot Value="Properties/Screenshot_05.png" />
   <Tag Value="Code Mod" />
   <ForumLink Value="https://forum.paradoxplaza.com/forum/threads/hard-mode.1674622/" />
-  <ModVersion Value="1.1" />
+  <ModVersion Value="1.2" />
   <GameVersion Value="1.2.*" />
   <ChangeLog>
-# v1.1
+# v1.2
 ## Hotfix
-* Compatibility with patch 1.2.0f1.
+* Compatibility with patch 1.2.4f1.
 </ChangeLog>
   <ExternalLink Type="discord" Url="https://discord.gg/E4k8ZEtRxd" />
   <ExternalLink Type="github" Url="https://github.com/JadHajjar/HardMode" />

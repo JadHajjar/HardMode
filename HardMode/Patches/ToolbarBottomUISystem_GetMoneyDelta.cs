@@ -13,22 +13,21 @@ using System;
 
 namespace HardMode.Patches
 {
-	[HarmonyPatch(typeof(ToolbarBottomUISystem), "GetMoneyDelta", new Type[] { })]
+	[HarmonyPatch(typeof(CityServiceBudgetSystem), "GetMoneyDelta", new Type[] { })]
 	public class ToolbarBottomUISystem_GetMoneyDelta
 	{
-		public static void Postfix(ToolbarBottomUISystem __instance, ref int __result)
+		public static void Postfix(CityServiceBudgetSystem __instance, ref int __result)
 		{
-			var m_CityServiceBudgetSystem = __instance.World.GetOrCreateSystemManaged<CityServiceBudgetSystem>();
 			var m_CitySystem = __instance.World.GetOrCreateSystemManaged<CitySystem>();
 			var num = 0;
 			for (var i = 0; i < (int)ExpenseSource.Count; i++)
 			{
-				num -= EconomyUtility.GetExpense((ExpenseSource)i, m_CityServiceBudgetSystem.GetExpense((ExpenseSource)i));
+				num -= EconomyUtility.GetExpense((ExpenseSource)i, __instance.GetExpense((ExpenseSource)i));
 			}
 
 			for (var j = 0; j < (int)IncomeSource.Count; j++)
 			{
-				num += EconomyUtility.GetIncome((IncomeSource)j, m_CityServiceBudgetSystem.GetIncome((IncomeSource)j));
+				num += EconomyUtility.GetIncome((IncomeSource)j, __instance.GetIncome((IncomeSource)j));
 			}
 
 			if (__instance.EntityManager.TryGetBuffer<BufferedMoneyResource>(m_CitySystem.City, true, out var moneyBuffer) && moneyBuffer.Length > 0)
